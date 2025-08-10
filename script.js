@@ -48,15 +48,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize language on page load
     switchLanguage(currentLang);
 
-    // Prevent mobile scroll bouncing
+    // Enhanced mobile scroll bouncing prevention
     let isScrolling = false;
     let startY = 0;
     let startScrollTop = 0;
+    let lastScrollTop = 0;
     
     // Touch event handlers for mobile
     document.addEventListener('touchstart', function(e) {
         startY = e.touches[0].clientY;
         startScrollTop = window.pageYOffset;
+        lastScrollTop = startScrollTop;
     }, { passive: true });
     
     document.addEventListener('touchmove', function(e) {
@@ -64,15 +66,50 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const currentY = e.touches[0].clientY;
         const diffY = startY - currentY;
+        const currentScrollTop = window.pageYOffset;
         
-        // Prevent excessive scrolling
-        if (Math.abs(diffY) > 50) {
+        // Prevent excessive scrolling and bouncing
+        if (Math.abs(diffY) > 30) {
             isScrolling = true;
             setTimeout(() => {
                 isScrolling = false;
-            }, 100);
+            }, 150);
         }
-    }, { passive: true });
+        
+        // Prevent overscroll at top and bottom
+        if (currentScrollTop <= 0 && diffY > 0) {
+            e.preventDefault();
+        }
+        
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        if (currentScrollTop >= maxScroll && diffY < 0) {
+            e.preventDefault();
+        }
+        
+        lastScrollTop = currentScrollTop;
+    }, { passive: false });
+    
+    // Prevent momentum scrolling on iOS
+    document.addEventListener('touchend', function(e) {
+        if (isScrolling) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+    
+    // Additional scroll prevention for iOS Safari
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        document.addEventListener('gesturechange', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        document.addEventListener('gestureend', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    }
 
     // Mobile Menu Functionality
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
