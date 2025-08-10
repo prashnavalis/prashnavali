@@ -25,15 +25,12 @@ body {
     line-height: 1.6;
     color: var(--text-dark);
     background: linear-gradient(135deg, var(--light-cream) 0%, #FFF5EE 100%);
+    min-height: 100vh;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     position: relative;
-    height: 100%;
+    
 }
-html, body {
-    overscroll-behavior: none; /* Stops elastic bounce */
-}
-
 
 .container {
     max-width: 1200px;
@@ -918,7 +915,7 @@ html, body {
     /* Fix mobile scroll bouncing */
     body {
         position: relative;
-        height: 100%;
+        
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: none;
@@ -952,7 +949,7 @@ html, body {
     html, body {
         position: fixed;
         width: 100%;
-        height: 100%;
+        
         overflow: hidden;
     }
 
